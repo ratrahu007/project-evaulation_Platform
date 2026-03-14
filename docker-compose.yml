@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # Spring Boot Application
+  backend:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      # Add other environment variables here later (e.g., for AI APIs)
+      # - OPENAI_API_KEY=${OPENAI_API_KEY}
+    depends_on:
+      - db
+    networks:
+      - spring-mysql-net
+
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    ports:
+      - "3307:3306" # Expose on 3307 locally to avoid conflicts with local MySQL
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - spring-mysql-net
+
+volumes:
+  mysql-data:
+
+networks:
+  spring-mysql-net:
+    driver: bridge
