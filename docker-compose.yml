@@ -1,38 +1,43 @@
 version: '3.8'
 
 services:
-  # Spring Boot Application
+
   backend:
     build: .
     ports:
-      - "8080:8080"
+      - "9090:9090"
+    env_file:
+      - .env
     environment:
-      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
-      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
-      # Add other environment variables here later (e.g., for AI APIs)
-      # - OPENAI_API_KEY=${OPENAI_API_KEY}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
+      TWILIO_PHONE_NUMBER: ${TWILIO_PHONE_NUMBER}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    restart: always
     networks:
       - spring-mysql-net
 
-  # MySQL Database
   db:
     image: mysql:8.0
     ports:
-      - "3307:3306" # Expose on 3307 locally to avoid conflicts with local MySQL
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - "3307:3306"
+    env_file:
+      - .env
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
       - spring-mysql-net
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 volumes:
   mysql-data:
 
 networks:
   spring-mysql-net:
-    driver: bridge

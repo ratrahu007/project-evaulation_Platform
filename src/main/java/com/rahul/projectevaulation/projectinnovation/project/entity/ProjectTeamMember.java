@@ -1,6 +1,6 @@
 package com.rahul.projectevaulation.projectinnovation.project.entity;
 
-import com.rahul.projectevaulation.projectinnovation.auth.entity.User;
+import com.rahul.projectevaulation.projectinnovation.auth.entity.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
