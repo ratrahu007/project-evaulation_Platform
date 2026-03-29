@@ -1,5 +1,6 @@
 package com.rahul.projectevaulation.projectinnovation.academic.entity;
 
+import com.rahul.projectevaulation.projectinnovation.academic.entity.AcademicYear;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
